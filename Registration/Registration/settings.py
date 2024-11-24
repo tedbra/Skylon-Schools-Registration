@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,9 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "ckeditor",
+    'ckeditor_uploader',
+    "debug_toolbar",
+    "home"
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -66,6 +71,46 @@ TEMPLATES = [
         },
     },
 ]
+
+# CKEDITOR_CONFIGS = { 
+#     'default': { 
+#         'toolbar': 'full', 
+#         'height': 300, 
+#         'width': 'auto', 
+#         'extraPlugins': 'codesnippet', 
+#         'toolbar_Custom': [ 
+#             ['Bold', 'Italic', 'Underline'], 
+#             ['NumberedList', 'BulletedList'], 
+#             ['Link', 'Unlink'], 
+#             ['RemoveFormat', 'Source', 'CodeSnippet'], 
+#         ], 
+#     }, 
+# }
+
+CKEDITOR_CONFIGS = { 
+    'default': { 
+        'toolbar': [ 
+            {'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline']}, 
+            {'name': 'paragraph', 'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent']}, 
+            {'name': 'links', 'items': ['Link', 'Unlink']}, 
+            {'name': 'insert', 'items': ['Image', 'Table']}, 
+            {'name': 'styles', 'items': ['Format', 'Font', 'FontSize']}, 
+            {'name': 'colors', 'items': ['TextColor', 'BGColor']}, 
+            {'name': 'tools', 'items': ['Maximize', 'ShowBlocks']},], 
+        'height': 200, 
+        'width': 'auto', 
+        'extraPlugins': 'codesnippet',
+        'toolbar_Custom': [ 
+            ['Bold', 'Italic', 'Underline'], 
+            ['NumberedList', 'BulletedList'], 
+            ['Link', 'Unlink'], 
+            ['RemoveFormat', 'Source', 'CodeSnippet'], 
+        ],
+    }, 
+}
+
+# If using the uploader 
+CKEDITOR_UPLOAD_PATH = 'uploads/'
 
 WSGI_APPLICATION = 'Registration.wsgi.application'
 
@@ -119,7 +164,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static'),
+]
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+USE_DJANGO_JQUERY = True

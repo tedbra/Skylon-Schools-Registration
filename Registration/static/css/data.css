@@ -1,0 +1,39 @@
+/* Mobile Styles */ 
+@media (max-width: 600px) { 
+    nav ul li { display: block; margin: 10px 0; } 
+    main { flex-direction: column; } 
+    .sidebar { order: -1; } 
+} 
+    
+/* Tablet Styles */ 
+@media (min-width: 601px) and (max-width: 1024px) { 
+    main { flex-direction: column; } 
+    .sidebar { order: -1; } 
+} 
+    
+/* Desktop Styles */ 
+@media (min-width: 1025px) { 
+    nav ul li { display: inline-block; margin: 0 20px} 
+    main { flex-direction: row; } 
+}
+
+fieldset.boxed {
+    border: 2px solid #6A0DAD; /* Border thickness and color */
+    border-radius: 5px;     /* Rounded corners */
+    padding: 15px;          /* Padding inside the fieldset */
+    margin: 10px 0;         /* Margin outside the fieldset */
+}
+
+legend {
+    font-weight: bold;       /* Bold text for legend */
+    padding: 0 10px;        /* Padding around the legend text */
+}
+
+
+
+
+
+
+
+
+

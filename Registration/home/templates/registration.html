@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="contact-box-main">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-sm-12">
+                <div class="contact-form-right">
+                    <h3>Registration <span class="text-primary">Form</span></h3>
+                    <br/>
+                    <form id="student_form" method="POST">
+                        {% csrf_token %}
+                        <div class="row">                            
+                            <div class="col-md-12">
+                                <div class="form-group" enctype="multipart/form-data">
+                                    {{ form.media.js }}
+                                    <fieldset name="Student information" class="boxed">
+                                        <legend><h4 style="color: green;">Student's information</h4></legend>
+                                        {% for field in form %}
+                                            {% if forloop.counter <= 5 %}
+                                                <p>{{ field.label_tag }} {{ field }}</p>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </fieldset>
+                                    
+                                    <fieldset name="Location Information" class="boxed">
+                                        <legend><h4 style="color: green;">Location information</h4></legend>
+                                        {% for field in form %}
+                                            {% if forloop.counter > 5 and forloop.counter <= 10 %} 
+                                                <p>{{ field.label_tag }} {{ field }}</p> 
+                                            {% endif %}
+                                        {% endfor %}
+                                    </fieldset>
+
+                                    <fieldset name="Location Information" class="boxed">
+                                        <legend><h4 style="color: green;">Others</h4></legend>
+                                        {% for field in form %}
+                                            {% if forloop.counter == 11 %} 
+                                                <p>{{ field.label_tag }} {{ field }}</p> 
+                                            {% endif %}
+                                        {% endfor %}
+                                    </fieldset>
+
+                                    <fieldset name="Parent's Information" class="boxed">
+                                        <legend><h4 style="color: green;">Parent's information</h4></legend>
+                                        {% for field in form %}
+                                            {% if forloop.counter > 11 %} 
+                                                <p>{{ field.label_tag }} {{ field }}</p> 
+                                            {% endif %}
+                                        {% endfor %}
+                                    </fieldset>
+
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <div class="submit-button text-center">
+                                    <button class="btn btn-outline-primary text-center" id="submit" type="submit">Submit Form</button>
+                                    <div id="msgSubmit" class="h3 text-center hidden"></div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+{% block javascript %}
+<script>
+    /*
+        On submiting the form, send the POST ajax
+        request to server and after successfull submission
+        display the object.
+    */
+    $("#student_form").submit(function (e) {
+        // preventing from page reload and default actions
+        e.preventDefault();
+        // serialize the data for sending the form data.
+        var serializedData = $(this).serialize();
+        // make POST ajax call
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'home' %}",
+            data: serializedData,
+            success: function (response) {
+                // on successfull creating object
+                // 1. clear the form.
+                $("#student_form").trigger('reset');
+                // 2. focus to nickname input 
+                $("#id_name").focus();                
+            },
+            error: function (response) {
+                // alert the error if any error occured
+                alert(response["responseJSON"]["error"]);
+            }
+        })
+    })
+</script>
+{% endblock %}
