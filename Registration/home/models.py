@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime, date
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 # Create your models here.
 
@@ -10,6 +11,12 @@ class Grade(models.Model):
 
     def __str__(self):
         return self.grade
+
+class Payment(models.Model):
+    payment_method = models.CharField(max_length=200, null=True)
+
+    def __str__(self):
+        return self.payment_method
 
 class Student(models.Model):
 
@@ -72,40 +79,133 @@ class Student(models.Model):
     )
 
     GENDER= (
-        ('male','Male'),
-        ('female', 'Female')
+        ('girl','Boy'),
+        ('boy', 'Girl')
     )
 
-    name = models.CharField(max_length=200, null=True, verbose_name='Name * ')
+    PAYMENT_METHOD= (
+        ('MPESA','MPESA'),
+        ('Bank Transfer', 'Bank Transfer'),
+        ('Other', 'Other')
+    )
+
+    TERM = (
+        ('Term 1','Term 1'),
+        ('Term 2','Term 2'),
+        ('Term 3','Term 3')
+    )
+    #system_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=200, null=True, verbose_name='Name * ')    
     birthDate = models.DateTimeField(null=True, verbose_name='Date of Birth * ')
     birthPlace = models.CharField(max_length=200, null=True, verbose_name='Place of Birth * ')
+    gender = models.CharField(max_length=200, null=True, choices=GENDER, default="Girl", blank=True, verbose_name='Gender * ')
     admission_level = models.ForeignKey(Grade, null=True, on_delete= models.SET_NULL, verbose_name='Admission Level * ')
     picture = models.ImageField(null=True, blank=True, verbose_name="Student's picture", upload_to='studentImages/')
-
     nationality = models.CharField(max_length=200, null=True, choices=COUNTRIES, default='Kenya', verbose_name='Nationality * ')
     town_name = models.CharField(max_length=200, null=True, verbose_name='Town Name * ')
     road_name = models.CharField(max_length=200, null=True, verbose_name='Road Name * ')
-    previous_school = models.CharField(max_length=300, blank=True, null=True, verbose_name='Previous School * ')
-
-    transport = models.CharField(max_length=200, null=True, choices=YESNO, verbose_name='Transport * ')
+    city_name = models.CharField(max_length=200, null=True, blank=True, default="Nairobi", verbose_name='City Name ')
+    previous_school = models.CharField(max_length=300, blank=True, null=True, verbose_name='Previous School ')
+    transport = models.CharField(max_length=200, null=True, choices=YESNO, default="No",verbose_name='Transport * ')
     optional_services_required_for_your_child = RichTextField(config_name='default',null=True, blank=True)
     #option_services = models.TextField(null=True, blank=True)
 
     emergency_contact = models.CharField(max_length=30, null=True, verbose_name="Primary Phone Number * ")
-
     mother_name = models.CharField(max_length=200, null=True, blank=True, verbose_name="Mother's Name")
     mother_phone = models.CharField(max_length=30, null=True, blank=True,verbose_name="Mother's Phone Number")
-
     father_name = models.CharField(max_length=200, null=True, blank=True,verbose_name="Father's Name")
     father_phone = models.CharField(max_length=30, null=True, blank=True,verbose_name="Father's Phone Number")
-
     guardian_name = models.CharField(max_length=200, null=True, blank=True,verbose_name="Guardian's Name")
     guardian_phone = models.CharField(max_length=30, null=True, blank=True,verbose_name="Guardian's Phone Number")
 
     date_added = models.DateTimeField(auto_now_add=True, null=True)
-    registration_agent = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
+    date_updated = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    term = models.CharField(max_length=200, null=True, choices=TERM, default="Term 1", blank=True, verbose_name='Term * ')
+    payment = models.IntegerField(default=0,blank=True, verbose_name='Payment in Ksh')
+    payment_method = models.ForeignKey(Payment, null=True, blank=True, on_delete= models.SET_NULL, default = 'MPESA',verbose_name='Payment Method')
+    reference = models.CharField(max_length=200, null=True, blank=True, verbose_name='Reference ')
+    registration_agent = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    payment_history = models.TextField(blank=True)
+    payment_baba = RichTextField(config_name='default', blank=True)
+    student_ID = models.CharField(max_length=10, null=True, blank=True, verbose_name='Student ID')
 
     def __str__(self):
         return self.name + ' | ' +self.admission_level.grade
+
+    def get_absolute_url(self):
+        return reverse('home')
+        #return reverse('student-detail', kwargs={'pk':self.id})    
+
+    def save(self, *args, **kwargs):
+
+        num_list = []
+        current_date = datetime.now()
+
+        num_list.append('--' + str(current_date))
+
+        if self.payment:            
+            num_list.append(' Amount: '+ str(self.payment))
+            num_list.append(' Paid via: '+ str(self.payment_method))
+            num_list.append(' Reference: '+ str(self.reference))
+        else:
+            num_list.append('No PAYMENT WAS DONE')            
+
+        num_list.append(' For: '+ str(self.term))
+        num_list.append(' Updated by: '+ str(self.registration_agent))
+            
+        new_entry = ','.join(map(str, num_list))
+
+        if self.payment_history:
+            #tabala = self.payment_history
+            self.payment_history = new_entry + f'\n{self.payment_history}'
+            #tabala = self.payment_baba
+            self.payment_baba = new_entry + f'\n{self.payment_baba}'
+        else:
+            self.payment_history = new_entry
+            self.payment_baba = new_entry
+
+        self.payment = 0
+        self.date_updated = current_date
+
+        super(Student, self).save(*args, **kwargs)
+
+        if self.student_ID:
+            print('ID OF Student Already Exist = ' + self.student_ID)
+        else:
+            date_de_merde = str(current_date)
+            self.student_ID = 'SK'+ date_de_merde[2:4] + str(self.id).zfill(4)
+            print('********* THE FOREIGN ID IS : ' + str(self.id))
+        
+        super(Student, self).save(*args, **kwargs)
+
+
+    # def save(self, *args, **kwargs):
+    #     # Append a new number (for example, a random number) when the model is updated
+        
+    #     # Convert the existing string to a list
+    #     if self.payment_history:
+    #         num_list = [int(num) for num in self.payment_history.split(',')]
+    #     else:
+    #         num_list = []
+
+    #     # Append the new number
+    #     num_list.append(self.payment)
+
+    #     # Convert the list back to a comma-separated string
+    #     self.payment_history = ','.join(map(str, num_list))
+
+    #     # Call the original save method
+    #     super(Student, self).save(*args, **kwargs)
+
+
+
+
+
+
+
+
+
+
     
     

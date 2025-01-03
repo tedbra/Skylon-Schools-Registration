@@ -21,4 +21,4 @@ let myVariable2 = document.getElementById("the_date");
 myVariable2.innerHTML = formattedDate2;
 
 
-
+//document.getElementById('printButton').addEventListener('click', function() { window.print(); });

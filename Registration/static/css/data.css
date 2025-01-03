@@ -29,6 +29,22 @@ legend {
     padding: 0 10px;        /* Padding around the legend text */
 }
 
+table {
+    width: 100%;
+    border-collapse: collapse; /* Ensures that borders are collapsed into a single border */
+    border-spacing: 10px; /* Adds space between cells */
+}
+
+th, td {
+    border: 1px solid #ddd; /* Adds a border to table cells */
+    padding: 20px; /* Adds padding inside table cells */
+    text-align: left; /* Aligns text to the left */
+    width: auto;
+}
+
+th {
+    background-color: #f2f2f2; /* Adds background color to header cells */
+}
 
 
 

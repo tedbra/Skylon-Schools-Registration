@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title_tag %} Student List {% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="contact-box-main">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-sm-12">
+                <h3>Students <span class="text-primary">List</span></h3>
+                <table border="2">
+                    <thread>
+                        <tr style="color: black;">
+                            <th> Name </th>
+                            <th> Date of Birth </th>
+                            <th> Place of Birth </th>
+                            <th> Admission Level </th>
+                            <th> Student ID </th>
+                            <th> Payment History </th>
+                        </tr>
+                    </thread>
+            
+                    <tbody>
+                        {% for student in object_list %} 
+                        <tr>
+                            <td style="color:rgb(25, 219, 73);"> <a href="{% url 'student-detail' student.id %}"> {{ student.name }}</td>
+                            <td> {{ student.birthDate.date }}</td>
+                            <td> {{ student.birthPlace }} </td>
+                            <td> {{ student.admission_level }} </td>
+                            <td> {{ student.student_ID }} </td>
+                            <td> {{student.payment_baba|safe}} </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4"> No person in database. <a href="{% url 'home' %}"> Add First Person </a>.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block Content1%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Styled Table</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Ensures that borders are collapsed into a single border */
+            border-spacing: 10px; /* Adds space between cells */
+        }
+
+        th, td {
+            border: 1px solid #ddd; /* Adds a border to table cells */
+            padding: 8px; /* Adds padding inside table cells */
+            text-align: left; /* Aligns text to the left */
+        }
+
+        th {
+            background-color: #f2f2f2; /* Adds background color to header cells */
+        }
+    </style>
+</head>
+<body>
+    <h1>Sample Table</h1>
+    <table>
+        <tr>
+            <th>Header 1</th>
+            <th>Header 2</th>
+            <th>Header 3</th>
+        </tr>
+        <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+            <td>Data 3</td>
+        </tr>
+        <tr>
+            <td>Data 4</td>
+            <td>Data 5</td>
+            <td>Data 6</td>
+        </tr>
+    </table>
+</body>
+</html>
+{% endblock %}

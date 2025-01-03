@@ -1,6 +1,7 @@
-
 {% extends 'base.html' %}
+{% block title_tag %} Log In {% endblock %}
 
+{% load static %}
 {% block authenblock %}
 <div class="contact-box-main">
     <div class="container">
@@ -21,14 +22,14 @@
                                 </div>
                             
                                 <div class="submit-button">
-                                    <button class="btn hvr-hover" id="submit" type="submit">Log In</button>
+                                    <button class="btn btn-outline-primary text-center" id="submit-login" type="submit">Log In</button>
                                     <div id="msgSubmit" class="h3 text-center hidden"></div>
                                     <div class="clearfix"></div>
                                 </div>
 
                                 <div> <br/><br/><br/>
                                     If you forgot your password, please contact admin for a new password 
-                                    <a class="bd-link" href="https://wa.me/+33787314651">Contact on WhatsApp</a>
+                                    <a class="bd-link" href="https://wa.me/+33787314651" style="color: orangered;">Contact on WhatsApp</a>
                                 </div>
                             </div>
                         </div>
