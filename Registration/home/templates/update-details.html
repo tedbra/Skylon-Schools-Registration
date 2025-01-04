@@ -17,6 +17,11 @@
                             <div class="col-md-12">
                                 <div class="form-group" enctype="multipart/form-data">
                                     {{ form.media.js }}
+                                    {% for field in form %}
+                                            {% if forloop.counter == 28 %} 
+                                                <p>{{ field.label_tag }} {{ field }}</p> 
+                                            {% endif %}
+                                    {% endfor %}
                                     <fieldset name="Student information" class="boxed">
                                         <legend><h4 style="color: green;">Student's information</h4></legend>
                                         {% for field in form %}
@@ -56,7 +61,7 @@
                                     <fieldset name="Payment Information" class="boxed">
                                         <legend><h4 style="color: green;">Payment information</h4></legend>
                                         {% for field in form %}
-                                            {% if forloop.counter > 20 and forloop.counter < 26 %} 
+                                            {% if forloop.counter > 20 and forloop.counter < 28 %} 
                                                 <p>{{ field.label_tag }} {{ field }}</p> 
                                             {% endif %}
                                         {% endfor %}

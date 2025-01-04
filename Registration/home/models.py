@@ -123,52 +123,54 @@ class Student(models.Model):
 
     term = models.CharField(max_length=200, null=True, choices=TERM, default="Term 1", blank=True, verbose_name='Term * ')
     payment = models.IntegerField(default=0,blank=True, verbose_name='Payment in Ksh')
-    payment_method = models.ForeignKey(Payment, null=True, blank=True, on_delete= models.SET_NULL, default = 'MPESA',verbose_name='Payment Method')
+    payment_method = models.CharField(max_length=100, choices=PAYMENT_METHOD, null=True, blank=True, default = 'MPESA',verbose_name='Payment Method')
     reference = models.CharField(max_length=200, null=True, blank=True, verbose_name='Reference ')
-    registration_agent = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+
+    
     payment_history = models.TextField(blank=True)
     payment_baba = RichTextField(config_name='default', blank=True)
     student_ID = models.CharField(max_length=10, null=True, blank=True, verbose_name='Student ID')
 
+    #staff_agent = models.CharField(max_length=100, null=True, blank=True, verbose_name='Registration Staff')    
+    registration_agent = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Registration Staff')    
+
     def __str__(self):
         return self.name + ' | ' +self.admission_level.grade
 
-    def get_absolute_url(self):
-        return reverse('home')
-        #return reverse('student-detail', kwargs={'pk':self.id})    
+    # def get_absolute_url(self):
+    #     #return reverse('home')
+    #     return reverse('student-detail', kwargs={'pk':self.id})    
 
-    def save(self, *args, **kwargs):
+    def para(self, *args, **kwargs):
 
         num_list = []
         current_date = datetime.now()
 
+        print("What is in Payment History" + str(self.registration_agent))
+
         num_list.append('--' + str(current_date))
+        num_list.append(' Updated by: '+ str(self.registration_agent))
 
         if self.payment:            
             num_list.append(' Amount: '+ str(self.payment))
             num_list.append(' Paid via: '+ str(self.payment_method))
             num_list.append(' Reference: '+ str(self.reference))
+            num_list.append(' For: '+ str(self.term))
         else:
-            num_list.append('No PAYMENT WAS DONE')            
-
-        num_list.append(' For: '+ str(self.term))
-        num_list.append(' Updated by: '+ str(self.registration_agent))
+            num_list.append('No PAYMENT WAS DONE')
+        
             
         new_entry = ','.join(map(str, num_list))
+        new_entry_baba = '<p>' + new_entry + '</p>'
 
-        if self.payment_history:
-            #tabala = self.payment_history
-            self.payment_history = new_entry + f'\n{self.payment_history}'
-            #tabala = self.payment_baba
-            self.payment_baba = new_entry + f'\n{self.payment_baba}'
-        else:
-            self.payment_history = new_entry
-            self.payment_baba = new_entry
+        self.payment_history = new_entry
+        self.payment_baba = new_entry_baba
 
         self.payment = 0
-        self.date_updated = current_date
+        self.date_updated = current_date  
 
         super(Student, self).save(*args, **kwargs)
+      
 
         if self.student_ID:
             print('ID OF Student Already Exist = ' + self.student_ID)
@@ -176,7 +178,8 @@ class Student(models.Model):
             date_de_merde = str(current_date)
             self.student_ID = 'SK'+ date_de_merde[2:4] + str(self.id).zfill(4)
             print('********* THE FOREIGN ID IS : ' + str(self.id))
-        
+            print("Why is it going here when there is data in payment history")
+
         super(Student, self).save(*args, **kwargs)
 
 

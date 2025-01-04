@@ -17,7 +17,11 @@
                                
             </div> 
             <div class="col-lg-4 col-sm-6" style="text-align: center;">
-                <img class="img-fluid" src="{% static 'images/user_picture.png' %}" style="height: 200px;width: 200px;">
+                {% if student.picture %}
+                    <img class="img-fluid" src="{{ student.picture }}" style="height: 200px;width: 200px;">
+                {% else %}
+                    <img class="img-fluid" src="{% static 'images/user_picture.png' %}" style="height: 200px;width: 200px;">
+                {% endif %}
                 <p><span style="color: black;"> Student ID:  </span>{{ student.student_ID}}</p>                             
             </div>           
         </div>
@@ -123,19 +127,19 @@
 
         <div class="row" style="margin-bottom: 75px;"></div>
 
-        <h3> Payment <span>Status</span></h3>
+        <h3> Payments & Updates <span>Status</span></h3>
         <p>_______________________________________________________________________</p>
         <div class="row">
             <div class="col-lg-12 col-sm-12">
-                <h5 class="m-0 display-20 py-2"> Payment History:</h5>
-                    <span class="text-primary boxed">{{ student.payment_baba|safe}}</span>
+                <h5 class="m-0 display-20 py-2"> Update History:</h5>
+                    <span class="text-primary boxed">{{ student.payment_history}}</span>
             </div>
         </div>
     </div>
-    <div class="row" style="margin-bottom: 500px;"></div>
+    <div class="row" style="margin-bottom: 100px;"></div>
 
     <div class="container">
-        <a href="{% url 'student_list'%}" class="btn btn-outline-secondary col-md-2 text-center"> Go Back</a>
+        <a href="{% url 'student_list'%}" class="btn btn-outline-secondary col-md-2 text-center m-0 display-5"> Go Back</a>
         <a class="col-md-2"></a>
         <a href="{% url 'update-student' student.pk %}" class="btn btn-outline-secondary col-md-2 text-center"> Edit Form</a>
         <a class="col-md-2"></a>
@@ -143,7 +147,22 @@
     </div>
 </div>
 
-<script> document.getElementById('printButton').addEventListener('click', function() { window.print(); }); </script>
+<!-- Footer-->
+<br> <br><br> <br>
+<div class="container">
+    <div class="row align-items-center py-2 px-lg-5">
+        <div class="col-lg-4">
+            <a href="#" class="navbar-brand d-none d-lg-block">
+                <h1 class="m-0 display-5"><span class="text-primary">
+                    <img class="img-fluid h-50" src="{% static 'images/logo.png' %}" style="object-fit: cover;"> Skylon </span>Schools</h1></a>
+        </div>
+    </div>
+</div>
+<!-- Footer End -->
+
+<script> 
+    document.getElementById('printButton').addEventListener('click',function(){window.print();});
+</script>
 
 <div class="row" style="margin-bottom: 50px;"></div>
 
