@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.core import serializers
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
 from datetime import datetime
+import csv
 
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.views import PasswordChangeView, LoginView
@@ -67,7 +68,7 @@ class addStudentView(CreateView):
     
     # def get_form(self, form_class=None):
     #     form = super().get_form(form_class)
-    #     form.fields['payment_baba'].disabled = True
+    #     form.fields['update_history'].disabled = True
     #     return form
 
     # def post(self, *args, **kwargs):
@@ -117,8 +118,8 @@ class addStudentView(CreateView):
     #     new_entry_baba = '<p>'+new_entry+'</p>'
 
     #     print(new_entry_baba)
-    #     form.instance.payment_history = new_entry
-    #     form.instance.payment_baba= new_entry_baba
+    #     form.instance.last_update = new_entry
+    #     form.instance.update_history= new_entry_baba
 
     #     form.instance.payment = 0
     #     form.instance.date_updated = current_date
@@ -155,8 +156,8 @@ class addStudentView(CreateView):
         new_entry_baba = '<p>'+new_entry+'</p>'
 
         print(new_entry_baba)
-        instance.payment_history = new_entry
-        instance.payment_baba= new_entry_baba
+        instance.last_update = new_entry
+        instance.update_history= new_entry_baba
 
         instance.payment = 0
         instance.date_updated = current_date
@@ -225,7 +226,10 @@ class StudentListView(ListView):
 
 
     def get_context_data(self, *args, **kwargs):
-        context = super(StudentListView, self).get_context_data(*args, **kwargs)
+        context1 = super(StudentListView, self).get_context_data(*args, **kwargs)
+        total_number = Student.objects.count()
+        total_number_context = {'total_number' : total_number}
+        context = Merge(context1, total_number_context)
         return context
 
 
@@ -242,7 +246,7 @@ class UpdateStudentView(UpdateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.fields['payment_baba'].disabled = True
+        form.fields['update_history'].disabled = True
         return form
 
 
@@ -270,11 +274,11 @@ class UpdateStudentView(UpdateView):
         new_entry = ','.join(map(str, num_list))
         new_entry_baba = '<p>'+new_entry+'</p>'
 
-        tabala = form.cleaned_data.get('payment_history')
-        tabala_baba = form.cleaned_data.get('payment_baba')
+        tabala = form.cleaned_data.get('last_update')
+        tabala_baba = form.cleaned_data.get('update_history')
         print(tabala_baba)
-        form.instance.payment_history = new_entry + f'\n{tabala}'
-        form.instance.payment_baba= new_entry_baba + tabala_baba
+        form.instance.last_update = new_entry
+        form.instance.update_history= new_entry_baba + tabala_baba
 
         form.instance.payment = 0
         form.instance.date_updated = current_date   
@@ -282,15 +286,34 @@ class UpdateStudentView(UpdateView):
         return super().form_valid(form)
 
 
-# class StudentDetailView(DetailView):
-#     model = Student
-#     template_name = 'student_detail.html'
+def export_contacts(request):
 
-#     def get_object(self, queryset=None):
-#         name = self.kwargs.get('name')
-#         return get_object_or_404(Student, name=name)
+    #Create a response object with CSV header
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition'] = 'attachement; filename = "parents_contacts.csv"'
 
+    # Create a CSV writer
+    writer = csv.writer(response)
 
+    # Write the header row
+    writer.writerow(['Name', 'Grade', 'Gender', 'Principal Contact'])
+
+    # Write data in rows
+
+    for student in Student.objects.all():
+        writer.writerow([student.name, student.admission_level, student.gender, student.emergency_contact])
+    
+    return response
+
+def export_contacts_whats(request):
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition'] = 'attachement; filename = "parents_contacts_whats.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Principal Contact'])
+    for student in Student.objects.all():
+        writer.writerow([student.name, student.emergency_contact])
+    
+    return response
 
 
 

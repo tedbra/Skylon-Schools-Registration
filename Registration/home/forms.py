@@ -55,9 +55,9 @@ class StudentForm(forms.ModelForm):
             'payment': forms.TextInput(attrs={'class': 'form-control'}),
             'payment_method':forms.Select(attrs={'class':'form-control'}),
             'reference':forms.TextInput(attrs={'class':'form-control'}),
-            'payment_history': forms.Textarea(attrs={'class': 'form-control', 'readonly': 'readonly'}),
-            'payment_baba': forms.Textarea(attrs={'class': 'form-control'}), 
-            #'payment_baba':ReadOnlyCkEditorWidget(),           
+            'last_update': forms.Textarea(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'update_history': forms.Textarea(attrs={'class': 'form-control'}), 
+            #'update_history':ReadOnlyCkEditorWidget(),           
         }
 
 
@@ -66,7 +66,7 @@ class StudentForm(forms.ModelForm):
             super().__init__(*args, **kwargs)
             if user:
                 self.fields['registration_agent'].initial = user
-            self.fields['payment_baba'].widget.attrs['readonly'] = 'readonly'
+            self.fields['update_history'].widget.attrs['readonly'] = 'readonly'
 
 
 class SignInForm(AuthenticationForm):

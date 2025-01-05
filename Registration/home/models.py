@@ -127,8 +127,8 @@ class Student(models.Model):
     reference = models.CharField(max_length=200, null=True, blank=True, verbose_name='Reference ')
 
     
-    payment_history = models.TextField(blank=True)
-    payment_baba = RichTextField(config_name='default', blank=True)
+    last_update = models.TextField(blank=True,verbose_name='Last Update')
+    update_history = RichTextField(config_name='default', blank=True,verbose_name='Update History')
     student_ID = models.CharField(max_length=10, null=True, blank=True, verbose_name='Student ID')
 
     #staff_agent = models.CharField(max_length=100, null=True, blank=True, verbose_name='Registration Staff')    
@@ -163,8 +163,8 @@ class Student(models.Model):
         new_entry = ','.join(map(str, num_list))
         new_entry_baba = '<p>' + new_entry + '</p>'
 
-        self.payment_history = new_entry
-        self.payment_baba = new_entry_baba
+        self.last_update = new_entry
+        self.update_history = new_entry_baba
 
         self.payment = 0
         self.date_updated = current_date  
@@ -187,8 +187,8 @@ class Student(models.Model):
     #     # Append a new number (for example, a random number) when the model is updated
         
     #     # Convert the existing string to a list
-    #     if self.payment_history:
-    #         num_list = [int(num) for num in self.payment_history.split(',')]
+    #     if self.last_update:
+    #         num_list = [int(num) for num in self.last_update.split(',')]
     #     else:
     #         num_list = []
 
@@ -196,7 +196,7 @@ class Student(models.Model):
     #     num_list.append(self.payment)
 
     #     # Convert the list back to a comma-separated string
-    #     self.payment_history = ','.join(map(str, num_list))
+    #     self.last_update = ','.join(map(str, num_list))
 
     #     # Call the original save method
     #     super(Student, self).save(*args, **kwargs)

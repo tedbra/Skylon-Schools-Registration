@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views 
 from django.contrib.auth.views import LogoutView
-from .views import HomeView, addStudentView, UserSignInView, StudentListView, StudentDetailView, UpdateStudentView
+from .views import HomeView, addStudentView, UserSignInView, StudentListView, StudentDetailView, UpdateStudentView, export_contacts, export_contacts_whats
 
 
 urlpatterns = [
@@ -11,9 +11,10 @@ urlpatterns = [
     path('students/', StudentListView.as_view(), name='student_list'),    
     path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
     path('student/<int:pk>/', StudentDetailView.as_view(), name='student-detail'),
-    path('student/update/<int:pk>', UpdateStudentView.as_view(), name='update-student'),
-    
-    # path('student/update/<str:student_ID>/',UpdateStudentView.as_view(), name='update-student'),
+    path('student/update/<int:pk>', UpdateStudentView.as_view(), name='update-student'),    
+    path('export_csv/', export_contacts, name='export_conctacts'),
+    path('export_whats/', export_contacts_whats, name='export_conctacts_whats'),
+
     # path('ajax/options/', get_child_options, name='options'),
     # path('index/', indexView, name='index'),
     # path('post/ajax/friend', postFriend, name='post_friend'),
