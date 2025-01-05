@@ -1,0 +1,3 @@
+username: admin
+email: admin@project.com
+password: p@ss2025
